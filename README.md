@@ -13,6 +13,10 @@ If the original_url is valid, it would create a short url successfully and get t
   "original_url": "https://ec.ltn.com.tw/article/breakingnews/4789741"
 }
 ```
+##### Command
+```bash=
+curl -d '{"original_url": "https://ec.ltn.com.tw/article/breakingnews/4789741"}' -H "Content-Type: application/json" -X POST http://0.0.0.0:8000/api/short_url
+```
 ##### Return
 ```json=
 {
@@ -47,6 +51,10 @@ If the original_url doesn't match URL pattern, it would get the **status code 40
   "original_url": "jshjhfjsdjhfjs"
 }
 ```
+##### Command
+```bash=
+curl -d '{"original_url": "jshjhfjsdjhfjs"}' -H "Content-Type: application/json" -X POST http://0.0.0.0:8000/api/short_url
+```
 ##### Return
 ```json=
 {
@@ -67,7 +75,8 @@ If the shortURLstr is valid, it would redirect to the original url and get the *
 curl http://localhost:8000/2KY5XM6f -I
 ```
 ##### Return
-<img width="889" alt="image" src="https://github.com/user-attachments/assets/b402990d-e4ff-4a11-a32f-9e0014075bc2">
+<img width="907" alt="image" src="https://github.com/user-attachments/assets/ddeed417-f365-4f78-827d-8121463161bf">
+
 
 #### Example 2:
 If the shortURLstr doesn't exist, it would get the **status code 404**.
@@ -76,16 +85,29 @@ If the shortURLstr doesn't exist, it would get the **status code 404**.
 curl http://0.0.0.0:8000/HOVtlD -I
 ```
 ##### Return
+<img width="400" alt="image" src="https://github.com/user-attachments/assets/d151593c-e3ad-4261-b425-1fa6d8370425">
 <img width="383" alt="image" src="https://github.com/user-attachments/assets/72b6c9b3-032b-4198-82b0-09b71859f8b6">
+
+
+#### Example 3:
+If the shortURLstr is expired, it would get the **status code 410**.
+##### Command
+```bash=
+curl http://0.0.0.0:8000/UkLWZg9D -I
+```
+##### Return
+<img width="400" alt="image" src="https://github.com/user-attachments/assets/e64f47c3-4a68-4494-a653-6b719ca1c316">
+<img width="415" alt="image" src="https://github.com/user-attachments/assets/2e063814-6088-4109-a006-c5b842bd1b7c">
 
 User guide - Docker
 ==
-1. Pull the docker image from [docker hub](https://hub.docker.com/r/cscashley/shorturl-api-django):
+1. Install docker, please follow steps in [Docker docs](https://docs.docker.com/engine/install/).
+2. Pull the docker image from [docker hub](https://hub.docker.com/r/cscashley/shorturl-api-django):
 
 ```docker image pull cscashley/shorturl-api-django:v1.0.0```
 
-2. Run the image in the local environment, using port 8000:
+3. Run the image in the local environment, using port 8000:
 
 ```docker run --name django-app -p 8000:8000 -d cscashley/shorturl-api-django:v1.0.0```
 
-3. Then the Django service will run on localhost http://0.0.0.0:8000, and api could be tested on http://0.0.0.0:8000/docs/.
+4. Then the Django service will run on localhost http://localhost:8000, and api could be tested on http://localhost:8000/docs/.
