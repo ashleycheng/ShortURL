@@ -1,3 +1,5 @@
+from django.utils.timezone import now
+from rest_framework.decorators import action
 from rest_framework.viewsets import GenericViewSet
 from rest_framework import mixins, status
 from rest_framework.response import Response
@@ -37,3 +39,28 @@ class CreateShortURLViewSet(mixins.CreateModelMixin, GenericViewSet):
                 "reason": error_msg,
             }
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ShortURLRedirectViewSet(GenericViewSet):
+    @action(detail=False, methods=["GET"])
+    def self(self, request, shortURLstr):
+        try:
+            query = URLMapping.objects.get(short_url=shortURLstr)
+            # Check whether the short url is expired or not
+            if now() < query.expiration_date:
+                return Response(
+                    status=status.HTTP_302_FOUND,
+                    headers={"Location": query.original_url},
+                )
+            else:
+                response = {
+                    "success": False,
+                    "reason": "The short url is expired.",
+                }
+                return Response(response, status=status.HTTP_410_GONE)
+        except Exception:
+            response = {
+                "success": False,
+                "reason": "The short url doesn't exist.",
+            }
+            return Response(response, status=status.HTTP_404_NOT_FOUND)
